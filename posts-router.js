@@ -108,4 +108,51 @@ router.delete('/:id', async (req, res) => {
     }
 })
 
+// Get comments by post id // db.findPostComments( post_id )
+router.get('/:id/comments', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const existingPost = await db.findById(id);
+        if ( !existingPost.length > 0 ) {
+            res.status(404).json({
+                message: "The post with the specified ID does not exist."
+            })
+        }
+        const comments = await db.findPostComments(id);
+        console.log(comments)
+        res.status(200).json(comments)
+    } catch (error) {
+        res.status(500).json({
+            error: "The comments information could not be retrieved."
+        });
+    }
+})
+
+// Create a new comment // db.insertComment({ comment.text, comment.post_id})
+router.post('/:id/comments', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const comment = req.body;
+        console.log('comment', comment)
+        const existingPost = await db.findById(id);
+        if ( !existingPost.length > 0 ) {
+            res.status(404).json({
+                message: "The post with the specified ID does not exist."
+            })
+        }
+        if(!comment.text) {
+            res.status(400).json({
+                errorMessage: "Please provide text for the comment."
+            })
+        }
+        const commentWithId = {...comment, post_id: id};
+        const newComment = await db.insertComment(commentWithId);
+        res.status(201).json(newComment)
+    } catch (error) {
+        res.status(500).json({
+            error: "There was an error while saving the comment to the database"
+        });
+    }
+})
+
 module.exports = router;
