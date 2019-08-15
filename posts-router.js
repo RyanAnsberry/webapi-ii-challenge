@@ -69,7 +69,6 @@ router.put('/:id', async (req, res) => {
         })
     }
     const changes = req.body;
-    console.log(changes)
     if ( !changes.title || !changes.contents ) {
         res.status(400).json({
             errorMessage: "Please provide title and contents for the post."
@@ -119,7 +118,6 @@ router.get('/:id/comments', async (req, res) => {
             })
         }
         const comments = await db.findPostComments(id);
-        console.log(comments)
         res.status(200).json(comments)
     } catch (error) {
         res.status(500).json({
@@ -133,7 +131,6 @@ router.post('/:id/comments', async (req, res) => {
     try {
         const { id } = req.params;
         const comment = req.body;
-        console.log('comment', comment)
         const existingPost = await db.findById(id);
         if ( !existingPost.length > 0 ) {
             res.status(404).json({
