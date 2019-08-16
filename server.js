@@ -7,7 +7,7 @@ const PostsRouter = require('./posts-router.js');
 const server = express();
 
 server.use(express.json());
-server.use(cors());
+server.use(cors({ origin: 'http://localhost:3000'});
 server.use('/api/posts', PostsRouter);
 
 server.get('/', (req, res) => {
